@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/%40yarrgh%2Freact-oidc.svg)](https://badge.fury.io/js/%40yarrgh%2Freact-oidc)
 
-React component that preserves and restores page scroll position when the back browser button is pressed.
+React component that manages authentication state using OpenId Connect
 
 ## Installation
 
