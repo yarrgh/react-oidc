@@ -41,7 +41,6 @@ ReactDOM.render(
 import { useAuth } from "@yarrgh/react-oidc";
 
 const App = () => {
-  const [count, setCount] = useState(0);
   const {
     isLoading,
     isAuthenticated,
@@ -63,7 +62,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <p>Hello {user?.name}</p>
+      <p>Hello {currentUser.name}</p>
       <p>
         <button onClick={logout}>Logout</button>
       </p>
