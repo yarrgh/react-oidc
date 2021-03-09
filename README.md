@@ -46,7 +46,7 @@ const App = () => {
     isAuthenticated,
     user,
     signInRedirect,
-    logout,
+    signOutRedirect,
   } = useAuth();
 
   if (isLoading) {
@@ -64,7 +64,7 @@ const App = () => {
     <div className="App">
       <p>Hello {currentUser.name}</p>
       <p>
-        <button onClick={logout}>Logout</button>
+        <button onClick={signOutRedirect}>Logout</button>
       </p>
     </div>
   );
