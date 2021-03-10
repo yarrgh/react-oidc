@@ -12,6 +12,7 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   user?: Profile;
+  token?: string;
 }
 
 export const initialAuthState: AuthState = {

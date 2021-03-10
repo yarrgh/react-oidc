@@ -1,7 +1,8 @@
+import { User } from 'oidc-client';
 import { AuthState, Profile } from './auth-state';
 
 type Action =
-  | { type: 'INITIALIZED' | 'LOGIN_COMPLETE' | 'USER_UPDATED'; user?: Profile }
+  | { type: 'INITIALIZED' | 'LOGIN_COMPLETE' | 'USER_UPDATED'; user?: User }
   | { type: 'LOGOUT' }
   | { type: 'ERROR'; error: Error };
 
@@ -12,15 +13,16 @@ const reducer = (state: AuthState, action: Action): AuthState => {
       return {
         ...state,
         isAuthenticated: !!action.user,
-        user: action.user,
+        user: action.user.profile as Profile,
         isLoading: false,
         error: undefined,
+        token: action.user.access_token,
       };
     case 'USER_UPDATED':
       return {
         ...state,
         isAuthenticated: !!action.user,
-        user: action.user,
+        user: action.user.profile as Profile,
       };
     case 'LOGOUT':
       return {
