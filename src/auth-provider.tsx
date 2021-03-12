@@ -48,7 +48,7 @@ const AuthProvider: FC<AuthProviderOptions> = ({
         }
 
         const user = await client.getUser();
-        dispatch({ type: 'INITIALIZED', user: user.profile as Profile });
+        dispatch({ type: 'INITIALIZED', user });
       } catch (error) {
         dispatch({ type: 'ERROR', error });
       }
@@ -67,7 +67,7 @@ const AuthProvider: FC<AuthProviderOptions> = ({
 
   const signInRedirectCallback = useCallback(async () => {
     const user = await client.signinRedirectCallback();
-    dispatch({ type: 'LOGIN_COMPLETE', user: user.profile as Profile });
+    dispatch({ type: 'LOGIN_COMPLETE', user });
     const oidcState: OidcState = user?.state ?? {};
     onRedirectCallback(oidcState);
   }, [client, onRedirectCallback]);

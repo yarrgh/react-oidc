@@ -13,22 +13,24 @@ const reducer = (state: AuthState, action: Action): AuthState => {
       return {
         ...state,
         isAuthenticated: !!action.user,
-        user: action.user.profile as Profile,
+        user: action.user?.profile as Profile,
         isLoading: false,
         error: undefined,
-        token: action.user.access_token,
+        token: action.user?.access_token,
       };
     case 'USER_UPDATED':
       return {
         ...state,
         isAuthenticated: !!action.user,
-        user: action.user.profile as Profile,
+        user: action.user?.profile as Profile,
+        token: action.user?.access_token,
       };
     case 'LOGOUT':
       return {
         ...state,
         isAuthenticated: false,
         user: undefined,
+        token: undefined,
       };
     case 'ERROR':
       return {
