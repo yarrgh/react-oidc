@@ -5,11 +5,10 @@ import React, {
   useCallback,
   useEffect,
   useReducer,
-  useState,
 } from 'react';
-import AuthContext from './auth-context';
-import { initialAuthState, Profile } from './auth-state';
-import reducer from './reducer';
+import { AuthContext } from './auth-context';
+import { initialAuthState } from './auth-state';
+import { reducer } from './reducer';
 import { hasAuthParams } from './utils';
 
 export type OidcState = {
@@ -26,18 +25,27 @@ const defaultOnRedirectCallback = (appState?: OidcState): void => {
   );
 };
 
+let client: UserManager = null!;
+
+export async function getAccessToken(): Promise<string | null> {
+  return (await client?.getUser())?.access_token || null;
+}
+
 export interface AuthProviderOptions {
   onRedirectCallback?: (appState: OidcState) => void;
   userManagerOptions: UserManagerSettings;
 }
 
-const AuthProvider: FC<AuthProviderOptions> = ({
+export const AuthProvider: FC<AuthProviderOptions> = ({
   children,
   onRedirectCallback = defaultOnRedirectCallback,
   userManagerOptions,
 }: PropsWithChildren<AuthProviderOptions>) => {
-  const [client] = useState(new UserManager(userManagerOptions));
   const [state, dispatch] = useReducer(reducer, initialAuthState);
+
+  useEffect(() => {
+    client = new UserManager(userManagerOptions);
+  }, [userManagerOptions]);
 
   useEffect(() => {
     (async (): Promise<void> => {
@@ -53,31 +61,28 @@ const AuthProvider: FC<AuthProviderOptions> = ({
         dispatch({ type: 'ERROR', error });
       }
     })();
-  }, [client, onRedirectCallback]);
+  }, [onRedirectCallback]);
 
-  const signInRedirect = useCallback(
-    async (url = '/') => {
-      const oidcState: OidcState = {
-        returnTo: url,
-      };
-      await client.signinRedirect({ state: oidcState });
-    },
-    [client]
-  );
+  const signInRedirect = useCallback(async (url = '/') => {
+    const oidcState: OidcState = {
+      returnTo: url,
+    };
+    await client.signinRedirect({ state: oidcState });
+  }, []);
 
   const signInRedirectCallback = useCallback(async () => {
     const user = await client.signinRedirectCallback();
     dispatch({ type: 'LOGIN_COMPLETE', user });
     const oidcState: OidcState = user?.state ?? {};
     onRedirectCallback(oidcState);
-  }, [client, onRedirectCallback]);
+  }, [onRedirectCallback]);
 
   const logout = useCallback(() => {
     dispatch({ type: 'LOGOUT' });
     client.clearStaleState();
     client.removeUser();
     client.signoutRedirect();
-  }, [client]);
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -92,5 +97,3 @@ const AuthProvider: FC<AuthProviderOptions> = ({
     </AuthContext.Provider>
   );
 };
-
-export default AuthProvider;

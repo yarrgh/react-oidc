@@ -2,35 +2,38 @@ import { User } from 'oidc-client';
 import { AuthState, Profile } from './auth-state';
 
 type Action =
-  | { type: 'INITIALIZED' | 'LOGIN_COMPLETE' | 'USER_UPDATED'; user?: User }
+  | {
+      type: 'INITIALIZED' | 'LOGIN_COMPLETE' | 'USER_UPDATED';
+      user: User | null;
+    }
   | { type: 'LOGOUT' }
   | { type: 'ERROR'; error: Error };
 
-const reducer = (state: AuthState, action: Action): AuthState => {
+export const reducer = (state: AuthState, action: Action): AuthState => {
   switch (action.type) {
     case 'INITIALIZED':
     case 'LOGIN_COMPLETE':
       return {
         ...state,
-        isAuthenticated: !!action.user,
+        isAuthenticated: !!action.user && !action.user.expired,
         user: action.user?.profile as Profile,
         isLoading: false,
-        error: undefined,
-        token: action.user?.access_token,
+        error: null,
+        token: action.user?.access_token ?? null,
       };
     case 'USER_UPDATED':
       return {
         ...state,
-        isAuthenticated: !!action.user,
+        isAuthenticated: !!action.user && !action.user.expired,
         user: action.user?.profile as Profile,
-        token: action.user?.access_token,
+        token: action.user?.access_token ?? null,
       };
     case 'LOGOUT':
       return {
         ...state,
         isAuthenticated: false,
-        user: undefined,
-        token: undefined,
+        user: null,
+        token: null,
       };
     case 'ERROR':
       return {
@@ -43,5 +46,3 @@ const reducer = (state: AuthState, action: Action): AuthState => {
       return state;
   }
 };
-
-export default reducer;

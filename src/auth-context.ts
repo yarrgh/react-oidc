@@ -18,6 +18,4 @@ const initialContext: AuthContextInterface = {
   signOutRedirect: stub,
 };
 
-const AuthContext = createContext<AuthContextInterface>(initialContext);
-
-export default AuthContext;
+export const AuthContext = createContext<AuthContextInterface>(initialContext);

@@ -8,14 +8,17 @@ export interface Profile {
 }
 
 export interface AuthState {
-  error?: Error;
+  error: Error | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  user?: Profile;
-  token?: string;
+  user: Profile | null;
+  token: string | null;
 }
 
 export const initialAuthState: AuthState = {
   isAuthenticated: false,
   isLoading: true,
+  user: null,
+  token: null,
+  error: null,
 };

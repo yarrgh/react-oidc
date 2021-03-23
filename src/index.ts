@@ -1,7 +1,8 @@
 export {
-  default as AuthProvider,
+  AuthProvider,
   AuthProviderOptions,
   OidcState,
+  getAccessToken,
 } from './auth-provider';
-export { default as useAuth } from './use-auth';
-export { default as AuthContext, AuthContextInterface } from './auth-context';
+export { useAuth } from './use-auth';
+export { AuthContext, AuthContextInterface } from './auth-context';
